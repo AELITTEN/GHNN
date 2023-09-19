@@ -1,6 +1,6 @@
 # Generalized Hamiltonian Neural Networks
 
-Code for the training and evalutation of Generalized Hamiltonian Neural Networks and other structure-preserving neural networks for data of Hamiltonian systems.
+Code for the training and evalutation of [Generalized Hamiltonian Neural Networks](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4555181) and other structure-preserving neural networks for data of Hamiltonian systems.
 
 For comparsion purposes [SympNets](https://arxiv.org/abs/2001.03750) are implemented
 as well as [HénonNets](https://arxiv.org/abs/2007.04496).
