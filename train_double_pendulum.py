@@ -21,7 +21,7 @@ for nn_type in nn_types:
             settings = json.load(file_)
 
     data_path = os.path.split(os.getcwd())[0]
-    data_path = os.path.join(data_path, 'Data', 'double_pendulum', 'h_01_m5_training.h5.1')
+    data_path = os.path.join(data_path, 'Data', 'doub_pend_training.h5.1')
     settings['data_path'] = data_path
     del(settings['bodies'])
     del(settings['dims'])
@@ -30,7 +30,7 @@ for nn_type in nn_types:
     settings['batch_size'] = 500
     settings['period_q'] = 3.141592653589793
 
-    for i in range(1, 11):
+    for i in range(1, 51):
         settings['seed'] = i
         os.mkdir(os.path.join(nn_path, f'nn_{i}'))
         with open(os.path.join(nn_path, f'nn_{i}', 'settings.json'), 'w') as file_:

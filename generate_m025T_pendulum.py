@@ -5,12 +5,8 @@ import pandas as pd
 import ghnn
 
 data_path = os.path.join('..', 'Data')
-if not os.path.exists(data_path):
-    os.mkdir(data_path)
-
-data_path = os.path.join('..', 'Data', 'm025T_pendulum')
 num_runs = 500
-store_name = 'all_runs.h5.1'
+store_name = 'pend_all_runs.h5.1'
 nu_q = 0.95
 nu_p = 0
 dt = 0.01
@@ -81,26 +77,26 @@ for run_num in range(num_runs):
 ghnn.data.combine(data_path, store_name, num_runs)
 
 ghnn.data.create_pendulum_training_dataframe(data_path, store_name, 'h_01_training.h5.1', num_runs, 1e-1, **kwargs)
-ghnn.data.create_pendulum_training_dataframe(data_path, store_name, 'h_05_training.h5.1', num_runs, 5e-1, **kwargs)
 
-for step in ['01', '05']:
-    save_name = os.path.join(data_path, f'h_{step}_m025T_training.h5.1')
+save_name = os.path.join(data_path, 'pend_training.h5.1')
 
-    for d_type in ['', 'val_', 'test_']:
-        feat = pd.read_hdf(os.path.join(data_path, f'h_{step}_training.h5.1'), f'/{d_type}features')
-        lab = pd.read_hdf(os.path.join(data_path, f'h_{step}_training.h5.1'), f'/{d_type}labels')
-        constants = pd.read_hdf(os.path.join(data_path, f'h_{step}_training.h5.1'), '/constants')
-        runs = feat['run'].unique()
+for d_type in ['', 'val_', 'test_']:
+    feat = pd.read_hdf(os.path.join(data_path, f'h_01_training.h5.1'), f'/{d_type}features')
+    lab = pd.read_hdf(os.path.join(data_path, f'h_01_training.h5.1'), f'/{d_type}labels')
+    constants = pd.read_hdf(os.path.join(data_path, f'h_01_training.h5.1'), '/constants')
+    runs = feat['run'].unique()
 
-        keep = []
-        for run in runs:
-            run_data = feat[feat['run'] == run]
-            until = np.where(np.diff(np.sign(run_data['q_A'])))[0][0] + 1
-            keep += list(run_data.iloc[:until].index)
+    keep = []
+    for run in runs:
+        run_data = feat[feat['run'] == run]
+        until = np.where(np.diff(np.sign(run_data['q_A'])))[0][0] + 1
+        keep += list(run_data.iloc[:until].index)
 
-        feat = feat.loc[keep]
-        lab = lab.loc[feat.index]
+    feat = feat.loc[keep]
+    lab = lab.loc[feat.index]
 
-        feat.to_hdf(save_name, f'/{d_type}features', format='fixed', **save_kwargs)
-        lab.to_hdf(save_name, f'/{d_type}labels', format='fixed', **save_kwargs)
-    constants.to_hdf(save_name, '/constants', format='fixed', **save_kwargs)
+    feat.to_hdf(save_name, f'/{d_type}features', format='fixed', **save_kwargs)
+    lab.to_hdf(save_name, f'/{d_type}labels', format='fixed', **save_kwargs)
+constants.to_hdf(save_name, '/constants', format='fixed', **save_kwargs)
+
+os.remove(os.path.join(data_path, 'h_01_training.h5.1'))

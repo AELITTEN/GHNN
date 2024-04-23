@@ -2,21 +2,18 @@ import os
 import ghnn
 
 data_path = os.path.join('..', 'Data')
-if not os.path.exists(data_path):
-    os.mkdir(data_path)
-
-data_path = os.path.join('..', 'Data', 'circular_3body')
 num_runs = 5000
-store_name = 'all_runs.h5.1'
+store_name = 'circ_3body_all_runs.h5.1'
+T = 7
+dt = 0.01
+converge = (0.001, 100)
 seed = 0
 
 kwargs = {'validation_share': 0.1,
           'test_share': 0.1,
           'seed': seed}
 
-ghnn.data.circular_brutus(data_path, num_runs, brutus_path=os.path.join('..', 'Brutus-MPI'), T=7, dt=1e-2, seed=seed)
-ghnn.data.create_training_dataframe(data_path, store_name, 'h_01_training.h5.1', num_runs, 0.1, **kwargs)
-ghnn.data.create_training_dataframe(data_path, store_name, 'h_01_m5_training.h5.1', num_runs, 0.1, max_time=5, **kwargs)
-ghnn.data.create_training_dataframe(data_path, store_name, 'h_05_training.h5.1', num_runs, 0.5, **kwargs)
-ghnn.data.create_training_dataframe(data_path, store_name, 'h_05_m5_training.h5.1', num_runs, 0.5, max_time=5, **kwargs)
+#ghnn.data.circular_brutus(data_path, num_runs, brutus_path=os.path.join('..', 'Brutus-MPI'), store_name=store_name, T=T, dt=dt, seed=seed)
+ghnn.data.circular(data_path, num_runs, store_name=store_name, T=T, dt=dt, converge=converge, seed=seed)
+ghnn.data.create_training_dataframe(data_path, store_name, 'circ_3body_training.h5.1', num_runs, 0.5, max_time=5, **kwargs)
 

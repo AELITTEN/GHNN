@@ -21,11 +21,11 @@ for nn_type in nn_types:
             settings = json.load(file_)
 
     data_path = os.path.split(os.getcwd())[0]
-    data_path = os.path.join(data_path, 'Data', 'circular_3body', 'h_05_m5_training.h5.1')
+    data_path = os.path.join(data_path, 'Data', 'circ_3body_training.h5.1')
     settings['data_path'] = data_path
     settings['batch_size'] = 1000
 
-    for i in range(1, 11):
+    for i in range(1, 51):
         settings['seed'] = i
         os.mkdir(os.path.join(nn_path, f'nn_{i}'))
         with open(os.path.join(nn_path, f'nn_{i}', 'settings.json'), 'w') as file_:

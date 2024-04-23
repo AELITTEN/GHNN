@@ -25,7 +25,24 @@ $ cd GHNN
 $ pip install -e .
 ```
 
-## Train your first NN:
+## Reproduce the results of the paper introducng GHNNs:
+
+To reproduce the results of the numerical experiments in the paper [A Generalized
+Framework of Neural Networks for Hamiltonian Systems](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4555181),
+one can use the generate_\* python scripts to generate the data, followed by the train_\*
+scripts to train all 800 neural networks and finally the analyze_\* scripts to generate figures
+similar to the ones presented in the paper.
+
+It is important to note that, by default, the generate\_circular\_3body.py script does not use the
+Brutus integrator to generate the data, as it was done for the paper. Instead, it uses the same
+integrator as for the double pendulum. To use the Brutus integrator (which has to be installed
+separately), uncomment the one line in the script and comment out the following line.
+
+Alternatively, the exact data used in the paper is available at Zenodo: [Data](https://zenodo.org/records/11032352).
+
+Also, the already trained neural networks are available in a separate repository on GitHub: [NeuralNets\_GHNN](https://github.com/AELITTEN/NeuralNets_GHNN).
+
+## Train your own first NN:
 
 Create a directory for the NN and copy the default settings of the type of NN you want to train
 from `GHNN/ghnn/training/` and save it as `settings.json` in the new directory. Then train by

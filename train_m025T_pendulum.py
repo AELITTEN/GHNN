@@ -6,11 +6,11 @@ nn_path = os.path.join('..', 'NeuralNets')
 if not os.path.exists(nn_path):
     os.mkdir(nn_path)
 
-os.mkdir(os.path.join('..', 'NeuralNets', 'm025T_pendulum'))
+os.mkdir(os.path.join('..', 'NeuralNets', 'pendulum'))
 nn_types = ['MLP', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
 
 for nn_type in nn_types:
-    nn_path = os.path.join('..', 'NeuralNets', 'm025T_pendulum', nn_type)
+    nn_path = os.path.join('..', 'NeuralNets', 'pendulum', nn_type)
     os.mkdir(nn_path)
 
     if nn_type == 'SympNet':
@@ -21,7 +21,7 @@ for nn_type in nn_types:
             settings = json.load(file_)
 
     data_path = os.path.split(os.getcwd())[0]
-    data_path = os.path.join(data_path, 'Data', 'm025T_pendulum', 'h_01_m025T_training.h5.1')
+    data_path = os.path.join(data_path, 'Data', 'pend_training.h5.1')
     settings['data_path'] = data_path
     del(settings['bodies'])
     del(settings['dims'])
@@ -31,7 +31,7 @@ for nn_type in nn_types:
     settings['batch_size'] = 200
     settings['period_q'] = 3.141592653589793
 
-    for i in range(1, 11):
+    for i in range(1, 51):
         settings['seed'] = i
         os.mkdir(os.path.join(nn_path, f'nn_{i}'))
         with open(os.path.join(nn_path, f'nn_{i}', 'settings.json'), 'w') as file_:
