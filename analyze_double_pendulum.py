@@ -7,7 +7,7 @@ def generate_nn_paths_list(names):
     for name in names:
         nn_paths = []
         for i in range(1,51):
-            nn_paths.append(os.path.join('..', 'NeuralNets', 'double_pendulum', name, f'nn_{i}'))
+            nn_paths.append(os.path.join('..', 'NeuralNets_GHNN', 'double_pendulum', name, f'nn_{i}'))
         nn_paths_list.append(nn_paths)
     return nn_paths_list
 

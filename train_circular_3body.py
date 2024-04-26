@@ -2,15 +2,15 @@ import os
 import json
 import ghnn
 
-nn_path = os.path.join('..', 'NeuralNets')
+nn_path = os.path.join('..', 'NeuralNets_GHNN')
 if not os.path.exists(nn_path):
     os.mkdir(nn_path)
 
-os.mkdir(os.path.join('..', 'NeuralNets', 'circular_3body'))
+os.mkdir(os.path.join('..', 'NeuralNets_GHNN', 'circular_3body'))
 nn_types = ['MLP', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
 
 for nn_type in nn_types:
-    nn_path = os.path.join('..', 'NeuralNets', 'circular_3body', nn_type)
+    nn_path = os.path.join('..', 'NeuralNets_GHNN', 'circular_3body', nn_type)
     os.mkdir(nn_path)
 
     if nn_type == 'SympNet':
