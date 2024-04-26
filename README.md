@@ -46,7 +46,7 @@ It can be downloaded and saved in a directory called _Data_ next to the GHNN dir
 ### 2. Train the neural networks:
 The train_\* scripts can be used to train all 800 neural networks.
 
-Alternatively, the already trained neural networks are available in a separate repository on GitHub: https://github.com/AELITTEN/NeuralNets\_GHNN.
+Alternatively, the already trained neural networks are available in a separate repository on GitHub: https://github.com/AELITTEN/NeuralNets_GHNN.
 The repository can simply be cloned or downloaded next to the GHNN and Data directory.
 
 ### 3. Analyze the reults:
