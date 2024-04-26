@@ -1,4 +1,5 @@
 from ghnn.nets.mlp import *
+from ghnn.nets.mlp_wsymp import *
 from ghnn.nets.la_sympnet import *
 from ghnn.nets.g_sympnet import *
 from ghnn.nets.ghnn import *
@@ -9,6 +10,7 @@ from ghnn.nets.pt_modules import *
 
 del nnet
 del mlp
+del mlp_wsymp
 del la_sympnet
 del g_sympnet
 del ghnn

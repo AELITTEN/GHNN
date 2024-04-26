@@ -1,6 +1,6 @@
 import torch
 
-__all__ = ['Module', 'DenseModule', 'LinearModule', 'ActivationModule', 'GradientModule', 'SE_HamiltonModule', 'Double_SE_HamiltonModule', 'SV_HamiltonModule', 'Double_SV_HamiltonModule', 'HamiltonModule', 'HenonModule', 'Double_HenonModule', 'mse_w_loss']
+__all__ = ['Module', 'DenseModule', 'LinearModule', 'ActivationModule', 'GradientModule', 'SE_HamiltonModule', 'Double_SE_HamiltonModule', 'SV_HamiltonModule', 'Double_SV_HamiltonModule', 'HamiltonModule', 'HenonModule', 'Double_HenonModule', 'mse_w_loss', 'mae_w_loss', 'mse_symp_loss', 'mae_symp_loss']
 
 def find_act(activation):
     """Identifies the activation function from a string.
@@ -783,3 +783,38 @@ class mse_w_loss(Module):
     def forward(self, output, target):
         loss = torch.mean(((output - target) * self.weights)**2)
         return loss
+
+class mae_w_loss(Module):
+    def __init__(self, weights):
+        super().__init__()
+        self.weights = weights
+
+    def forward(self, output, target):
+        loss = torch.mean(torch.abs((output - target) * self.weights))
+        return loss
+
+class mse_symp_loss(Module):
+    def __init__(self, positions, symp_lambda):
+        super().__init__()
+        self.positions = positions
+        self.symp_lambda = symp_lambda
+
+    def forward(self, nn, inp, target):
+        output = nn(inp)
+        data_loss = torch.mean((output - target)**2)
+        symp_loss = nn.calc_symp_mse(self.positions)
+        symp_loss = torch.mean(symp_loss)
+        return data_loss + self.symp_lambda * symp_loss
+
+class mae_symp_loss(Module):
+    def __init__(self, positions, symp_lambda):
+        super().__init__()
+        self.positions = positions
+        self.symp_lambda = symp_lambda
+
+    def forward(self, nn, inp, target):
+        output = nn(inp)
+        data_loss = torch.mean(torch.abs(output - target))
+        symp_loss = nn.calc_symp_mae(self.positions)
+        symp_loss = torch.mean(symp_loss)
+        return data_loss + self.symp_lambda * symp_loss

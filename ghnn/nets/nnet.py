@@ -9,7 +9,7 @@ import pandas as pd
 from scipy.interpolate import interp1d
 import torch
 from abc import ABC, abstractmethod
-from ghnn.nets.pt_modules import Module, mse_w_loss
+from ghnn.nets.pt_modules import Module, mse_w_loss, mae_w_loss, mse_symp_loss, mae_symp_loss
 from ghnn.data.adaptor import Data_adaptor
 
 __all__ = ['NNet']
@@ -248,9 +248,16 @@ class NNet(Module, ABC):
                 self.model[mod].params[param] = torch.nn.Parameter(torch.FloatTensor(weight_dict[mod][i]).requires_grad_(True))
         self.device = self.settings['device']
 
+    def my_loss(self, train_features, train_labels):
+        """Calculates the loss."""
+        return self.loss(self(train_features), train_labels)
+
     def train(self):
         """Trains the NN according to the settings and saves it to a json file afterwards."""
-        data = self.load_data()
+        if self.settings['nn_type'] == 'MLP_wsymp':
+            data, coordinates = self.load_data()
+        else:
+            data = self.load_data()
         test_data_loaded = False
         self.settings['pos_scaling'] = data.pos_scaling
         self.settings['mom_scaling'] = data.mom_scaling
@@ -285,13 +292,21 @@ class NNet(Module, ABC):
                                                                    verbose=True)
 
         if self.settings['loss'] == 'mse':
-            if self.settings['loss_weights']:
+            if self.settings['nn_type'] == 'MLP_wsymp':
+                self.loss = mse_symp_loss(coordinates, self.settings['symp_lambda'])
+            elif self.settings['loss_weights']:
                 weights = 1/abs(data.train_labels).mean(axis=0)
                 self.loss = mse_w_loss(weights)
             else:
                 self.loss = torch.nn.MSELoss()
         elif self.settings['loss'] == 'mae':
-            self.loss = torch.nn.L1Loss()
+            if self.settings['nn_type'] == 'MLP_wsymp':
+                self.loss = mae_symp_loss(coordinates, self.settings['symp_lambda'])
+            elif self.settings['loss_weights']:
+                weights = 1/abs(data.train_labels).mean(axis=0)
+                self.loss = mae_w_loss(weights)
+            else:
+                self.loss = torch.nn.L1Loss()
         else:
             raise NotImplementedError
 
@@ -308,12 +323,12 @@ class NNet(Module, ABC):
             has_left = True
             while(has_left):
                 train_features, train_labels, has_left = data.get_batch(self.settings['batch_size'])
-                loss = self.loss(self(train_features), train_labels)
+                loss = self.my_loss(train_features, train_labels)
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
 
-            loss_validation = self.loss(self(data.validation_features), data.validation_labels)
+            loss_validation = self.my_loss(data.validation_features, data.validation_labels)
             loss_history.append([i+1, loss.item(), loss_validation.item()])
 
             if not os.path.isdir(self.settings['path_logs']):

@@ -3,6 +3,7 @@ import os
 import json
 import pandas as pd
 from ghnn.nets.mlp import MLP
+from ghnn.nets.mlp_wsymp import MLP_wsymp
 from ghnn.nets.la_sympnet import LA_SympNet
 from ghnn.nets.g_sympnet import G_SympNet
 from ghnn.nets.ghnn import GHNN
@@ -39,6 +40,8 @@ def net_from_dir(path, device=None):
     settings = _load_settings(path)
     if settings['nn_type'] == 'MLP':
         my_net = MLP(path)
+    elif settings['nn_type'] == 'MLP_wsymp':
+        my_net = MLP_wsymp(path)
     elif settings['nn_type'] == 'LA_SympNet':
         my_net = LA_SympNet(path)
     elif settings['nn_type'] == 'G_SympNet':
@@ -51,7 +54,7 @@ def net_from_dir(path, device=None):
         my_net = Double_HenonNet(path, device=device)
     else:
         raise ValueError('No known nn_type could be identified. '
-                         'Use "MLP", "LA_SympNet", "G_SympNet", '
+                         'Use "MLP", "MLP_wsymp", "LA_SympNet", "G_SympNet", '
                          '"GHNN", "HenonNet" or "double_HenonNet"')
     return my_net
 
