@@ -7,7 +7,7 @@ if not os.path.exists(nn_path):
     os.mkdir(nn_path)
 
 os.mkdir(os.path.join('..', 'NeuralNets_GHNN', 'pendulum'))
-nn_types = ['MLP', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
+nn_types = ['MLP', 'MLP_wsymp', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
 
 for nn_type in nn_types:
     nn_path = os.path.join('..', 'NeuralNets_GHNN', 'pendulum', nn_type)

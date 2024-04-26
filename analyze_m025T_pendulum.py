@@ -16,7 +16,7 @@ if __name__ == '__main__':
     num_runs = 500
     data_path = os.path.join('..', 'Data')
 
-    all_names = ['MLP', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
+    all_names = ['MLP', 'MLP_wsymp', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
     best_names = ['MLP', 'SympNet', 'HenonNet', 'GHNN']
 
     figures_path = os.path.join('..', 'Figures')
