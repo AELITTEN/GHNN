@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 import torch
+from torch.func import vmap, vjp
 from abc import ABC, abstractmethod
 from ghnn.nets.pt_modules import Module, mse_w_loss, mae_w_loss, mse_symp_loss, mae_symp_loss
 from ghnn.data.adaptor import Data_adaptor
@@ -150,6 +151,18 @@ class NNet(Module, ABC):
     def get_mom_labels(self):
         """Returns a list of the momentum label names."""
         return [lab for lab in self.settings['label_names'] if lab[0] == 'p']
+
+    def jacobian(self, inputs):
+        """Calculates the jacobian of the NN with regards to its inputs"""
+        num_in = inputs.shape[0]
+        inputs.requires_grad_()
+        unit_vectors = np.eye(2*self.dim)
+        unit_vectors = unit_vectors.repeat(num_in, 0)
+        unit_vectors = unit_vectors.reshape(2*self.dim, num_in, 2*self.dim)
+        unit_vectors = torch.tensor(unit_vectors, dtype=self.dtype, device=self.device)
+        _, vjp_fn = vjp(self.forward, inputs)
+        jacobian, = vmap(vjp_fn)(unit_vectors)
+        return jacobian
 
     def load_data(self, data_path=None):
         """Loads the training data.
@@ -557,3 +570,27 @@ class NNet(Module, ABC):
         result['mae'] = mean/len(runs)
 
         return result
+
+    def calc_symp_mse(self, pos):
+        jac = self.jacobian(pos)
+        jac = torch.swapaxes(jac, 0, 1)
+        dim = self.dim
+        up = np.concatenate((np.zeros((dim, dim)), np.eye(dim)), axis=1)
+        down = np.concatenate((-np.eye(dim), np.zeros((dim, dim))), axis=1)
+        J = np.concatenate((up, down), axis=0)
+        J = torch.tensor(J, dtype=self.dtype, device=self.device)
+        symp_loss = torch.swapaxes(jac, 1, 2) @ J @ jac - J
+        symp_loss = torch.mean(symp_loss**2, axis=(1,2))
+        return symp_loss
+
+    def calc_symp_mae(self, pos):
+        jac = self.jacobian(pos)
+        jac = torch.swapaxes(jac, 0, 1)
+        dim = self.dim
+        up = np.concatenate((np.zeros((dim, dim)), np.eye(dim)), axis=1)
+        down = np.concatenate((-np.eye(dim), np.zeros((dim, dim))), axis=1)
+        J = np.concatenate((up, down), axis=0)
+        J = torch.tensor(J, dtype=self.dtype, device=self.device)
+        symp_loss = torch.swapaxes(jac, 1, 2) @ J @ jac - J
+        symp_loss = torch.mean(torch.abs(symp_loss), axis=(1,2))
+        return symp_loss

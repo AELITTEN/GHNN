@@ -6,7 +6,6 @@ from shutil import rmtree
 import numpy as np
 import pandas as pd
 import torch
-from torch.func import vmap, vjp
 from ghnn.nets.nnet import NNet
 from ghnn.nets.pt_modules import DenseModule
 from ghnn.data.adaptor import Data_adaptor
@@ -104,39 +103,3 @@ class MLP_wsymp(NNet):
     def my_loss(self, train_features, train_labels):
         """Calculates the loss."""
         return self.loss(self, train_features, train_labels)
-
-    def jacobian(self, inputs):
-        """Calculates the jacobian of the NN with regards to its inputs"""
-        num_in = inputs.shape[0]
-        inputs.requires_grad_()
-        unit_vectors = np.eye(2*self.dim)
-        unit_vectors = unit_vectors.repeat(num_in, 0)
-        unit_vectors = unit_vectors.reshape(2*self.dim, num_in, 2*self.dim)
-        unit_vectors = torch.tensor(unit_vectors, dtype=self.dtype, device=self.device)
-        _, vjp_fn = vjp(self.forward, inputs)
-        jacobian, = vmap(vjp_fn)(unit_vectors)
-        return jacobian
-
-    def calc_symp_mse(self, pos):
-        jac = self.jacobian(pos)
-        jac = torch.swapaxes(jac, 0, 1)
-        dim = self.dim
-        up = np.concatenate((np.zeros((dim, dim)), np.eye(dim)), axis=1)
-        down = np.concatenate((-np.eye(dim), np.zeros((dim, dim))), axis=1)
-        J = np.concatenate((up, down), axis=0)
-        J = torch.tensor(J, dtype=self.dtype, device=self.device)
-        symp_loss = torch.swapaxes(jac, 1, 2) @ J @ jac - J
-        symp_loss = torch.mean(symp_loss**2, axis=(1,2))
-        return symp_loss
-
-    def calc_symp_mae(self, pos):
-        jac = self.jacobian(pos)
-        jac = torch.swapaxes(jac, 0, 1)
-        dim = self.dim
-        up = np.concatenate((np.zeros((dim, dim)), np.eye(dim)), axis=1)
-        down = np.concatenate((-np.eye(dim), np.zeros((dim, dim))), axis=1)
-        J = np.concatenate((up, down), axis=0)
-        J = torch.tensor(J, dtype=self.dtype, device=self.device)
-        symp_loss = torch.swapaxes(jac, 1, 2) @ J @ jac - J
-        symp_loss = torch.mean(torch.abs(symp_loss), axis=(1,2))
-        return symp_loss
