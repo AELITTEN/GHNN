@@ -94,7 +94,7 @@ class MLP_wsymp(NNet):
         q_range = self.settings['q_range']
         ps = np.linspace(p_range[0], p_range[1], self.settings['p_steps'], axis=1) / data.mom_scaling
         qs = np.linspace(q_range[0], q_range[1], self.settings['q_steps'], axis=1) / data.pos_scaling
-        x = [p for p in ps] + [q for q in qs]
+        x = [q for q in qs] + [p for p in ps]
         x = np.meshgrid(*x, indexing='ij')
         coordinates = np.stack(x, axis=-1).reshape((-1, 2*self.dim))
         coordinates = torch.tensor(coordinates, dtype=self.dtype, device=self.device)
