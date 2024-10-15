@@ -22,10 +22,10 @@ setup(
     python_requires = '>=3.6',
     install_requires = [
         'tables',
-        'numpy',
+        'numpy <2.0',
         'pandas',
         'scipy',
-        'torch',
+        'torch >=2.0',
         'matplotlib'
     ]
 )
