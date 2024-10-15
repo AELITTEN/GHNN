@@ -115,7 +115,7 @@ def extract_from_brutus(data_path, store_name, num_runs, scale='SI', save_dims=[
             data[[col for col in save_columns if col[0:3] == 'p_'+body]] *= scales['velocity'] * masses[i][j]
         data[[col for col in save_columns if col[0] == 'q']] *= scales['position']
         data['time'] = data.index * step_size
-        data.to_hdf(os.path.join(data_path, store_name), '/run' + str(i), format='fixed', **kwargs)
+        data.to_hdf(os.path.join(data_path, store_name), key='/run' + str(i), format='fixed', **kwargs)
 
     constants = pd.Series([bodies, save_dims, masses], index=['bodies', 'dimensions', 'masses'])
     constants['step_size'] = step_size
@@ -125,7 +125,7 @@ def extract_from_brutus(data_path, store_name, num_runs, scale='SI', save_dims=[
                                        '--git-dir=' + git_dir,
                                        'rev-parse', 'HEAD']).decode('ascii').strip()
     constants['code_version'] = version
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)
 
 def combine(data_path, store_name, num_runs):
     """Combines DataFrames from several runs into one large DataFrame.
@@ -144,7 +144,7 @@ def combine(data_path, store_name, num_runs):
     all_runs = pd.concat(runs, names=['run'])
 
     kwargs = {'complib': 'zlib', 'complevel': 1}
-    all_runs.to_hdf(data_path, '/all_runs', format='fixed', **kwargs)
+    all_runs.to_hdf(data_path, key='/all_runs', format='fixed', **kwargs)
 
 def create_training_dataframe(data_path, store_name, training_store_name, num_runs, step_size, feature_names=None, label_names=None, validation_share=0.1, test_share=0.1, max_time=None, shift_t0=False, interp='linear', seed=None):
     """Creates from a combined DataFrame two (features, labels) DataFrames with constant time steps suitable for training.
@@ -253,13 +253,13 @@ def create_training_dataframe(data_path, store_name, training_store_name, num_ru
 
     kwargs = {'complib': 'zlib', 'complevel': 1}
     save_name = os.path.join(data_path, training_store_name)
-    constants.to_hdf(save_name, '/constants', format='fixed', **kwargs)
-    validation_features.to_hdf(save_name, '/val_features', format='fixed', **kwargs)
-    validation_labels.to_hdf(save_name, '/val_labels', format='fixed', **kwargs)
-    test_features.to_hdf(save_name, '/test_features', format='fixed', **kwargs)
-    test_labels.to_hdf(save_name, '/test_labels', format='fixed', **kwargs)
-    train_features.to_hdf(save_name, '/features', format='fixed', **kwargs)
-    train_labels.to_hdf(save_name, '/labels', format='fixed', **kwargs)
+    constants.to_hdf(save_name, key='/constants', format='fixed', **kwargs)
+    validation_features.to_hdf(save_name, key='/val_features', format='fixed', **kwargs)
+    validation_labels.to_hdf(save_name, key='/val_labels', format='fixed', **kwargs)
+    test_features.to_hdf(save_name, key='/test_features', format='fixed', **kwargs)
+    test_labels.to_hdf(save_name, key='/test_labels', format='fixed', **kwargs)
+    train_features.to_hdf(save_name, key='/features', format='fixed', **kwargs)
+    train_labels.to_hdf(save_name, key='/labels', format='fixed', **kwargs)
 
 def create_pendulum_training_dataframe(data_path, store_name, training_store_name, num_runs, step_size, feature_names=None, label_names=None, validation_share=0.1, test_share=0.1, max_time=None, shift_t0=False, interp='linear', seed=None):
     """Creates from a combined DataFrame two (features, labels) DataFrames with constant time steps suitable for training.
@@ -378,10 +378,10 @@ def create_pendulum_training_dataframe(data_path, store_name, training_store_nam
 
     kwargs = {'complib': 'zlib', 'complevel': 1}
     save_name = os.path.join(data_path, training_store_name)
-    constants.to_hdf(save_name, '/constants', format='fixed', **kwargs)
-    validation_features.to_hdf(save_name, '/val_features', format='fixed', **kwargs)
-    validation_labels.to_hdf(save_name, '/val_labels', format='fixed', **kwargs)
-    test_features.to_hdf(save_name, '/test_features', format='fixed', **kwargs)
-    test_labels.to_hdf(save_name, '/test_labels', format='fixed', **kwargs)
-    train_features.to_hdf(save_name, '/features', format='fixed', **kwargs)
-    train_labels.to_hdf(save_name, '/labels', format='fixed', **kwargs)
+    constants.to_hdf(save_name, key='/constants', format='fixed', **kwargs)
+    validation_features.to_hdf(save_name, key='/val_features', format='fixed', **kwargs)
+    validation_labels.to_hdf(save_name, key='/val_labels', format='fixed', **kwargs)
+    test_features.to_hdf(save_name, key='/test_features', format='fixed', **kwargs)
+    test_labels.to_hdf(save_name, key='/test_labels', format='fixed', **kwargs)
+    train_features.to_hdf(save_name, key='/features', format='fixed', **kwargs)
+    train_labels.to_hdf(save_name, key='/labels', format='fixed', **kwargs)

@@ -130,7 +130,7 @@ def generate_circular_inputs(data_path, num_runs, store_name, nu=2e-1, min_radiu
         p = np.concatenate((v1[i], v2[i], v3[i])) * np.repeat(m[i], len(dims))
         q = np.concatenate((q1[i], q2[i], q3[i]))
         init = pd.DataFrame([np.concatenate((q,p))], columns=columns)
-        init.to_hdf(os.path.join(data_path, store_name), '/run' + str(i), format='fixed', **kwargs)
+        init.to_hdf(os.path.join(data_path, store_name), key='/run' + str(i), format='fixed', **kwargs)
 
     constants = pd.Series([bodies, dims, m, scale],
                           index=['bodies', 'dimensions', 'masses', 'scale'])
@@ -139,7 +139,7 @@ def generate_circular_inputs(data_path, num_runs, store_name, nu=2e-1, min_radiu
                                        '--git-dir=' + git_dir,
                                        'rev-parse', 'HEAD']).decode('ascii').strip()
     constants['code_version'] = version
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)
 
 def generate_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_p=0, seed=None):
     """Generates input coordinates for the single pendulum.
@@ -164,7 +164,7 @@ def generate_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_p=0, se
         q = nu_q * np.random.uniform(-math.pi, math.pi, (1))
         columns = [qp+'_'+body for (qp, body) in product(['q', 'p'], bodies)]
         init = pd.DataFrame([np.concatenate((q,p))], columns=columns)
-        init.to_hdf(os.path.join(data_path, store_name), '/run' + str(i), format='fixed', **kwargs)
+        init.to_hdf(os.path.join(data_path, store_name), key='/run' + str(i), format='fixed', **kwargs)
 
     constants = pd.Series([bodies, 1, 1, 1],
                           index=['bodies', 'mass', 'length', 'g'])
@@ -173,7 +173,7 @@ def generate_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_p=0, se
                                        '--git-dir=' + git_dir,
                                        'rev-parse', 'HEAD']).decode('ascii').strip()
     constants['code_version'] = version
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)
 
 def generate_double_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_p=0, seed=None):
     """Generates input coordinates for the double pendulum.
@@ -198,7 +198,7 @@ def generate_double_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_
         q = nu_q * np.random.uniform(-math.pi, math.pi, (2))
         columns = [qp+'_'+body for (qp, body) in product(['q', 'p'], bodies)]
         init = pd.DataFrame([np.concatenate((q,p))], columns=columns)
-        init.to_hdf(os.path.join(data_path, store_name), '/run' + str(i), format='fixed', **kwargs)
+        init.to_hdf(os.path.join(data_path, store_name), key='/run' + str(i), format='fixed', **kwargs)
 
     constants = pd.Series([bodies, [1, 1], [1, 1], 1],
                           index=['bodies', 'masses', 'lengths', 'g'])
@@ -207,7 +207,7 @@ def generate_double_pendulum_inputs(data_path, num_runs, store_name, nu_q=1, nu_
                                        '--git-dir=' + git_dir,
                                        'rev-parse', 'HEAD']).decode('ascii').strip()
     constants['code_version'] = version
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)
 
 def run_brutus(data_path, brutus_path, stop, start=0, n=2, T=10, dt=0.1, eta=0.1, e=1E-6, Lw=56, nmax=64, verb=2):
     """Runs brutus for stop-start input snapshots.
@@ -320,10 +320,10 @@ def integrate_n_body(data_path, store_name, run_num, integrator, T, dt, converge
     columns = [qp+'_'+body+'_'+dim for (qp,body,dim) in product(['q', 'p'], bodies, dims)]
     data = pd.DataFrame(np.reshape(calculations, (calculations.shape[0], -1)), columns=columns)
     data['time'] = data.index * dt
-    data.to_hdf(os.path.join(data_path, store_name), '/run' + str(run_num), format='fixed', **kwargs)
+    data.to_hdf(os.path.join(data_path, store_name), key='/run' + str(run_num), format='fixed', **kwargs)
 
     constants['step_size'] = dt
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)
 
 def integrate_pendulum(data_path, store_name, run_num, integrator, T, dt, converge=None):
     """Integrates a given run up to a final time T.
@@ -391,7 +391,7 @@ def integrate_pendulum(data_path, store_name, run_num, integrator, T, dt, conver
     columns = [qp+'_'+body for (qp, body) in product(['q', 'p'], bodies)]
     data = pd.DataFrame(calculations, columns=columns)
     data['time'] = data.index * dt
-    data.to_hdf(os.path.join(data_path, store_name), '/run' + str(run_num), format='fixed', **kwargs)
+    data.to_hdf(os.path.join(data_path, store_name), key='/run' + str(run_num), format='fixed', **kwargs)
 
     constants['step_size'] = dt
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **kwargs)

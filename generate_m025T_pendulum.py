@@ -69,10 +69,10 @@ for run_num in range(num_runs):
     columns = [qp+'_'+body for (qp, body) in product(['q', 'p'], bodies)]
     data = pd.DataFrame(calculations, columns=columns)
     data['time'] = data.index * dt
-    data.to_hdf(os.path.join(data_path, store_name), '/run' + str(run_num), format='fixed', **save_kwargs)
+    data.to_hdf(os.path.join(data_path, store_name), key='/run' + str(run_num), format='fixed', **save_kwargs)
 
     constants['step_size'] = dt
-    constants.to_hdf(os.path.join(data_path, store_name), '/constants', format='fixed', **save_kwargs)
+    constants.to_hdf(os.path.join(data_path, store_name), key='/constants', format='fixed', **save_kwargs)
 
 ghnn.data.combine(data_path, store_name, num_runs)
 
@@ -95,8 +95,8 @@ for d_type in ['', 'val_', 'test_']:
     feat = feat.loc[keep]
     lab = lab.loc[feat.index]
 
-    feat.to_hdf(save_name, f'/{d_type}features', format='fixed', **save_kwargs)
-    lab.to_hdf(save_name, f'/{d_type}labels', format='fixed', **save_kwargs)
-constants.to_hdf(save_name, '/constants', format='fixed', **save_kwargs)
+    feat.to_hdf(save_name, key=f'/{d_type}features', format='fixed', **save_kwargs)
+    lab.to_hdf(save_name, key=f'/{d_type}labels', format='fixed', **save_kwargs)
+constants.to_hdf(save_name, key='/constants', format='fixed', **save_kwargs)
 
 os.remove(os.path.join(data_path, 'h_01_training.h5.1'))
