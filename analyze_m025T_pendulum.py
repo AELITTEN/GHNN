@@ -17,7 +17,7 @@ if __name__ == '__main__':
     data_path = os.path.join('..', 'Data')
 
     all_names = ['MLP', 'MLP_wsymp', 'MLP_wsymp_2', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
-    best_names = ['MLP', 'SympNet', 'HenonNet', 'GHNN']
+    best_names = ['MLP', 'SympNet', 'HenonNet', 'GHNN', 'MLP_wsymp', 'MLP_wsymp_2']
 
     figures_path = os.path.join('..', 'Figures')
     if not os.path.exists(figures_path):
