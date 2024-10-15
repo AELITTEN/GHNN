@@ -16,7 +16,7 @@ for nn_type in nn_types:
     if nn_type == 'SympNet':
         with open(os.path.join('ghnn', 'training', 'default_G_SympNet.json')) as file_:
             settings = json.load(file_)
-    if nn_type == 'MLP_wsymp_2':
+    elif nn_type == 'MLP_wsymp_2':
         with open(os.path.join('ghnn', 'training', 'default_MLP_wsymp.json')) as file_:
             settings = json.load(file_)
             settings['p_range'] = [-2.5, 2.5]
