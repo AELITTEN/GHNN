@@ -6,16 +6,24 @@ nn_path = os.path.join('..', 'NeuralNets_GHNN')
 if not os.path.exists(nn_path):
     os.mkdir(nn_path)
 
-os.mkdir(os.path.join('..', 'NeuralNets_GHNN', 'pendulum'))
-nn_types = ['MLP', 'MLP_wsymp', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
+os.mkdir(os.path.join('..', 'NeuralNets_GHNN', 'm025T_pendulum'))
+nn_types = ['MLP', 'MLP_wsymp', 'MLP_wsymp_2', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
 
 for nn_type in nn_types:
-    nn_path = os.path.join('..', 'NeuralNets_GHNN', 'pendulum', nn_type)
+    nn_path = os.path.join('..', 'NeuralNets_GHNN', 'm025T_pendulum', nn_type)
     os.mkdir(nn_path)
 
     if nn_type == 'SympNet':
         with open(os.path.join('ghnn', 'training', 'default_G_SympNet.json')) as file_:
             settings = json.load(file_)
+    if nn_type == 'MLP_wsymp_2':
+        with open(os.path.join('ghnn', 'training', 'default_MLP_wsymp.json')) as file_:
+            settings = json.load(file_)
+            settings['p_range'] = [-2.5, 2.5]
+            settings['q_range'] = [-3, 3]
+            settings['p_steps'] = 9
+            settings['q_steps'] = 9
+            settings['symp_lambda'] = 100
     else:
         with open(os.path.join('ghnn', 'training', f'default_{nn_type}.json')) as file_:
             settings = json.load(file_)

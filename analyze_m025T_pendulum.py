@@ -7,7 +7,7 @@ def generate_nn_paths_list(names):
     for name in names:
         nn_paths = []
         for i in range(1,51):
-            nn_paths.append(os.path.join('..', 'NeuralNets_GHNN', 'pendulum', name, f'nn_{i}'))
+            nn_paths.append(os.path.join('..', 'NeuralNets_GHNN', 'm025T_pendulum', name, f'nn_{i}'))
         nn_paths_list.append(nn_paths)
     return nn_paths_list
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     num_runs = 500
     data_path = os.path.join('..', 'Data')
 
-    all_names = ['MLP', 'MLP_wsymp', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
+    all_names = ['MLP', 'MLP_wsymp', 'MLP_wsymp_2', 'SympNet', 'HenonNet', 'double_HenonNet', 'GHNN']
     best_names = ['MLP', 'SympNet', 'HenonNet', 'GHNN']
 
     figures_path = os.path.join('..', 'Figures')
